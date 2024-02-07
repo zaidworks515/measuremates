@@ -1,0 +1,7 @@
+flask
+tensorflow
+opencv-python
+opencv-contrib-python
+ultralytics
+azure.storage.blob
+scikit-learn==1.3.0
