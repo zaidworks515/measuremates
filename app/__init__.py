@@ -9,12 +9,12 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SUPPRESS_EXCEPTIONS'] = True
 
 # Model Loading Logic
-def load_model():
-    model_path = 'model/last.pt'
-    model = YOLO(model_path, task='pose')
-    return model
+# def load_model():
+#     model_path = 'model/last.pt'
+#     model = YOLO(model_path, task='pose')
+#     return model
 
-app.config['yolo_model'] = load_model()
+# app.config['yolo_model'] = load_model()
 
 # Azure Blob Storage Configuration (commented out for now)
 
