@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Result</h1>
+    <h2>Input Image:</h2>
+    <img src="{{ input_image_base64 }}" alt="Input Image" style="max-width: 100%; height: auto;">
+    <h2>Output Image:</h2>
+    <img src="{{ output_image_base64 }}" alt="Output Image" style="max-width: 100%; height: auto;">
+</body>
+</html>
