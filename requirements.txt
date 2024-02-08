@@ -8,3 +8,4 @@ scikit-learn==1.3.0
 Python-IO
 pybase64
 flask_cors
+azure.storage.blob
