@@ -1,22 +1,22 @@
 from flask import Flask, request, render_template
+import cv2
 import base64
 from io import BytesIO
 from PIL import Image
 from ultralytics import YOLO
 from datetime import datetime, timedelta
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
-from flask_cors import CORS,cross_origin
-import numpy as np
+from flask_cors import CORS, cross_origin
+###
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SUPPRESS_EXCEPTIONS'] = True
 
-
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @cross_origin()
-def home_page():
+def home():
     return render_template('index.html')
-
 
 @app.route('/evaluate', methods=['GET', 'POST'])
 @cross_origin()
@@ -26,7 +26,8 @@ def detect_objects():
         try:
             loaded_image = request.files['image']
 
-            image = Image.open(loaded_image)
+            image = cv2.imread(loaded_image)
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             
             # MODEL LOADING FROM AZURE BLOB STORAGE
             
@@ -67,16 +68,14 @@ def detect_objects():
                 url_list.append(sas_url)
                         
             model = YOLO(url_list[0], task='pose')
-            
-            # model=YOLO('model/last.pt', task='pose')
 
             results = model(source=image, save=False, conf=0.6, task='pose')
 
             pred_image = results[0].plot()
-            pred_rgb = pred_image[:, :, ::-1]  # Reverse the order of the last axis  (BACK TO RGB)
-            
+            pred_rgb = cv2.cvtColor(pred_image, cv2.COLOR_BGR2RGB)
+
             # Convert images to base64 format
-            input_image_base64 = encode_image(image)
+            input_image_base64 = encode_image(image_rgb)
             output_image_base64 = encode_image(pred_rgb)
 
             return render_template('result.html', input_image_base64=input_image_base64, output_image_base64=output_image_base64)
@@ -87,20 +86,14 @@ def detect_objects():
     else:
         return render_template('index.html')
 
+
 def encode_image(image):
-    # Convert JpegImageFile to NumPy array
-    image_array = np.array(image)
-
-    # Create a PIL Image from the NumPy array
-    image_pil = Image.fromarray(image_array)
-
-    # Convert the PIL Image to base64 format
+    image_pil = Image.fromarray(image)
     buffer = BytesIO()
     image_pil.save(buffer, format="PNG")
     image_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-
     return f"data:image/png;base64,{image_base64}"
 
-
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', threaded=True, port=8000)
+    app.run(host='0.0.0.0', threaded=True)
+    

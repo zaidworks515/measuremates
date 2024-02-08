@@ -23,10 +23,10 @@ def get_requirements(file_path:str)->List[str]:
     return requirements
 
 setup(
-    name = 'mlproject_regression',
+    name = 'MeasureMates',
     version= '0.0.1',
-    author='Utkarsh Gaikwad',
-    author_email='gaikwadujg@gmail.com',
+    author='Zaid',
+    author_email='zaid_works515@outlook.com',
     packages = find_packages(),
     install_requires = get_requirements('requirements.txt')
 )
