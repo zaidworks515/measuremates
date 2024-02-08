@@ -1,3 +1,4 @@
+os-sys
 flask
 tensorflow==2.13.1
 ultralytics
@@ -11,5 +12,3 @@ numpy
 opencv-python
 opencv-contrib-python
 opencv-python-headless
--e .
-
