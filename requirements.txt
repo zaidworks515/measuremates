@@ -1,6 +1,7 @@
 flask
 tensorflow==2.13.1
 opencv-python
+opencv-python-headless
 opencv-contrib-python
 ultralytics
 pillow
