@@ -6,7 +6,7 @@ from flask import Flask, request, render_template, g
 # from ultralytics import YOLO
 # from datetime import datetime, timedelta
 # from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
-from flask_cors import cross_origin
+# from flask_cors import cross_origin
 # ###
 
 app = Flask(__name__)
@@ -57,7 +57,7 @@ app.config['SUPPRESS_EXCEPTIONS'] = True
 # 	g.model = model
 
 @app.route('/')
-@cross_origin()
+# @cross_origin()
 def home():
 	return render_template('index.html')
 
