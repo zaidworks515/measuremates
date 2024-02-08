@@ -6,7 +6,7 @@ from PIL import Image
 from ultralytics import YOLO
 from datetime import datetime, timedelta
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
-from flask_cors import CORS, cross_origin
+from flask_cors import cross_origin
 ###
 
 app = Flask(__name__)
