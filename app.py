@@ -104,5 +104,5 @@ def encode_image(image):
 	return f"data:image/png;base64,{image_base64}"
 
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', threaded=True, port=8000)
+	app.run(debug=True, host='0.0.0.0', threaded=True, port=8080)
 	
