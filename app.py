@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, g
+from flask import Flask, request, render_template
 # import cv2
 # import base64
 # from io import BytesIO
