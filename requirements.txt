@@ -9,3 +9,5 @@ Python-IO
 pybase64
 flask_cors
 azure.storage.blob
+skia-python
+
