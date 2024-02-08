@@ -1,4 +1,4 @@
-os-sys
+os-sys==2.1.2
 flask
 tensorflow==2.13.1
 ultralytics
