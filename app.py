@@ -95,12 +95,12 @@ def home():
     	# return render_template('index.html')
 
 
-def encode_image(image):
-	image_pil = Image.fromarray(image)
-	buffer = BytesIO()
-	image_pil.save(buffer, format="PNG")
-	image_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-	return f"data:image/png;base64,{image_base64}"
+# def encode_image(image):
+# 	image_pil = Image.fromarray(image)
+# 	buffer = BytesIO()
+# 	image_pil.save(buffer, format="PNG")
+# 	image_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
+# 	return f"data:image/png;base64,{image_base64}"
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', threaded=True, port=8000)
