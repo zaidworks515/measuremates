@@ -1,16 +1,41 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Result</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='image/favicon.ico') }}" type="image/x-icon">
+<!--
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
+    Note: These scripts are downloaded offline inorder to avoid any sort of trouble if API changes etc.
+-->
+    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="static/js/jspdf.min.js"></script>
+    <script type="text/javascript" src="static/js/html2canvas.min.js"></script>
+    <script type="text/javascript" src="static/js/html_to_pdf_download.js"></script> <!-- local script connector -->
 
 </head>
+
 <body>
-    <h1>Result</h1>
-    <h2>Input Image:</h2>
-    <img src="{{ input_image_base64 }}" alt="Input Image" style="max-width: 100%; height: auto;">
-    <h2>Output Image:</h2>
-    <img src="{{ output_image_base64 }}" alt="Output Image" style="max-width: 100%; height: auto;">
+    <div id="content">
+        <h1>Result</h1>
+        <h2>Input Image:</h2>
+        <img src="{{ input_image }}" alt="Input Image">
+        <h2>Output Image:</h2>
+        <img src="{{ output_image }}" alt="Output Image">
+    </div>
+
+    <button id="downloadPdf" style="margin-left: auto;">Download PDF</button>
+
+    <script>
+        $('#downloadPdf').click(function () {
+            CreatePDFfromHTML();
+        });
+    </script>
+
 </body>
+
 </html>
