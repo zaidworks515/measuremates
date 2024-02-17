@@ -5,6 +5,7 @@
     <title>Result</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='image/favicon.ico') }}" type="image/x-icon">
+
 <!--
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
@@ -12,26 +13,30 @@
     
     Note: These scripts are downloaded offline inorder to avoid any sort of trouble if API changes etc.
 -->
+
     <script type="text/javascript" src="static/js/jquery.min.js"></script>
     <script type="text/javascript" src="static/js/jspdf.min.js"></script>
     <script type="text/javascript" src="static/js/html2canvas.min.js"></script>
-    <script type="text/javascript" src="static/js/html_to_pdf_download.js"></script> <!-- local script connector -->
-
+    <script type="text/javascript" src="static/js/html_to_pdf_download.js"></script>
 </head>
 
 <body>
-    <div id="content">
-        <h1>Result</h1>
-        <h2>Input Image:</h2>
-        <img src="{{ input_image }}" alt="Input Image">
-        <h2>Output Image:</h2>
-        <img src="{{ output_image }}" alt="Output Image">
+    
+    <div class="result">
+        {% for i in range(0, input_image|length) %}
+            <h1>Result</h1>
+            <h2>Input Image:</h2>
+            <img src="{{ input_image[i] }}" alt="Input Image">
+            <h2>Output Image:</h2>
+            <img src="{{ output_image[i] }}" alt="Output Image">
+        {% endfor %}
+        <button class="downloadPdf">Download PDF</button>
     </div>
-
-    <button id="downloadPdf" style="margin-left: auto;">Download PDF</button>
+    
 
     <script>
-        $('#downloadPdf').click(function () {
+        // Use class instead of ID for the button selector to handle multiple buttons
+        $('.downloadPdf').click(function () {
             CreatePDFfromHTML();
         });
     </script>
