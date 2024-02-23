@@ -39,12 +39,74 @@ def model_implementation(image):
             return 'MODEL IS NOT LOADED', None
         
         results = model(source=image, save=False, conf=0.6, task='pose')
-        predicted_image = results[0].plot()
+        
+        # predicted keypoints
+        predicted_keypoints=[]
+
+        kptss = results[0].keypoints.data
+        for kpts in kptss:
+            for kpt in kpts:
+                predicted_keypoints.append(kpt)
+        
+        
+        list_of_dicts = [{"x": kpt[0].item(), "y": kpt[1].item(), "z": kpt[2].item()} for kpt in predicted_keypoints]
+
+        for d in list_of_dicts:
+            if d['x'] == 0.0 and d['y'] == 0.0:   # If x,y is 0 which means the object is not present in the photo therefore, z=0
+                d['z'] = 0.0
+
+        # POSE DETECTION WORKING....
+        pose= ''
+
+        if (list_of_dicts[1].get('x') == 0 and list_of_dicts[2].get('x') != 0) and list_of_dicts[10].get('x') == 0:
+            pose ='left'
+
+        elif (list_of_dicts[1].get('x') != 0 and list_of_dicts[2].get('x') == 0) and list_of_dicts[10].get('x') == 0:
+            pose ='right'
+        else:
+            print('Retake the photo')
+                    
+        # HEIGHT ESTIMATION WORKING....
+        if pose == 'left':
+            first_foot = list_of_dicts[4]  # left front foot
+            second_foot = list_of_dicts[5] # left back foot
+            
+            height=''
+            
+            for h in [first_foot, second_foot]:
+                if (h.get('x') and h.get('y')) > 800:
+                    height='normal'
+                    
+                elif (h.get('x') or h.get('y')) == 0:
+                    height = 'Please retake the image as one of the hoof is not clearly visible'
+                
+                else:
+                    height='Not Normal'
+            
+        if pose == 'right':
+            first_foot = list_of_dicts[6] # right front foot
+            second_foot = list_of_dicts[7]  # right back foot
+
+            for h in [first_foot, second_foot]:
+                if (h.get('x') and h.get('y')) > 800:
+                    height='normal'
+                    
+                elif (h.get('x') or h.get('y')) == 0:
+                    height ='Please retake the image as one of the hoof is not clearly visible'
+                
+                else:
+                    height='Not Normal'    
+                    
+        
+        
+        predicted_image = results[0].plot() # plotted image
 
         output_image_path = os.path.join(output_image_save, 'output_image.jpeg')
+        input_image_path = os.path.join(input_image_save, 'input_image.jpeg')
         cv2.imwrite(output_image_path, predicted_image)
-
-        return image, output_image_path
+        cv2.imwrite(input_image_path, image)
+        
+        return input_image_path, output_image_path, height, pose
 
     except Exception as e:
         logging.exception("An error occurred: %s", str(e))
@@ -58,30 +120,13 @@ def prediction():
         try:
             with thread_lock:
                 loaded_image = request.files['image']
+                image_stream = loaded_image.stream
+                image_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
+                image = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)
 
-                image_data = loaded_image.read()
-                nparr = np.frombuffer(image_data, np.uint8)
-                image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)        
+                input_image, output_image, height, pose  = model_implementation(image)
                 
-                input_image, output_image  = model_implementation(image)
-            
-            
-            # threads = []
-            
-            # for image in loaded_image:
-            #     thread = threading.Thread(target=model_implementation, args=(loaded_image,))
-            #     threads.append(thread)
-            
-            # for thread in threads:
-            #     thread.start()
-
-            # # Wait for all threads to finish
-            # for thread in threads:
-            #     thread.join()
-
-
-                
-            return render_template('result.html', input_image=[input_image], output_image=[output_image])
+                return render_template('result.html', input_image=[input_image], output_image=[output_image], height=height, pose=pose)
         
         except HTTPException as e:
             logging.error("HTTP version not supported: %s", str(e))

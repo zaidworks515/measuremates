@@ -29,6 +29,9 @@
             <img src="{{ input_image[i] }}" alt="Input Image">
             <h2>Output Image:</h2>
             <img src="{{ output_image[i] }}" alt="Output Image">
+
+            <b><p>Height: {{ height }}</p></b>
+            <b><p>Pose: {{ pose }}</p></b>
         {% endfor %}
         <button class="downloadPdf">Download PDF</button>
     </div>
