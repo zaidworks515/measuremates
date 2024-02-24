@@ -22,24 +22,25 @@
 
 <body>
     
-    <div class="result">
+    <div id="content">   <!-- In js we have content as id -->
         {% for i in range(0, input_image|length) %}
             <h1>Result</h1>
             <h2>Input Image:</h2>
             <img src="{{ input_image[i] }}" alt="Input Image">
             <h2>Output Image:</h2>
             <img src="{{ output_image[i] }}" alt="Output Image">
-
             <b><p>Height: {{ height }}</p></b>
             <b><p>Pose: {{ pose }}</p></b>
         {% endfor %}
-        <button class="downloadPdf">Download PDF</button>
+        
+
     </div>
+    <button id="downloadPdf" style="display: block; margin: 20px auto;">Download PDF</button>
     
 
     <script>
         // Use class instead of ID for the button selector to handle multiple buttons
-        $('.downloadPdf').click(function () {
+        $('#downloadPdf').click(function () {
             CreatePDFfromHTML();
         });
     </script>
