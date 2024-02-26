@@ -38,7 +38,7 @@ def model_implementation(image):
         if model is None:
             return 'MODEL IS NOT LOADED', None
         
-        results = model(source=image, save=False, conf=0.6, task='pose')
+        results = model(source=image, save=False, conf=0.8, task='pose')
         
         # predicted keypoints
         predicted_keypoints=[]
