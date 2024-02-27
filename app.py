@@ -22,8 +22,7 @@ thread_lock = threading.Lock()
 
 @app.before_request
 def load_model():
-    # model = YOLO(os.path.join(app.root_path, 'static/model/best_pose_model.pt'))
-    model = YOLO(os.path.join(app.root_path, 'static/model/last.pt'))
+    model = YOLO(os.path.join(app.root_path, 'static/model/best_pose_model.pt'))
 
     g.model = model
 
