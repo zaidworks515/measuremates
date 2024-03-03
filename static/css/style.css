@@ -1,13 +1,26 @@
 /* Add your styling here */
 
+#uploadedImage, #uploadedImageLabel, #errorMessage {
+    display: none; 
+    max-width: 100%;
+    height: auto;
+    color: red; /* Set the color for the error message */
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    background-color: #e6ffe6; /* Light Green Background Color */
+    background-color: #4c3228; 
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Set the body height to 100% of the viewport height */
 }
 
 h1, h2 {
-    color: #333;
+    color: #FFD710;
 }
 
 form {
@@ -25,6 +38,27 @@ button {
     margin-right: 10px; /* Add margin to the right of the button */
 }
 
+#evaluateButton {
+    background-color: #cbb32a; /* Golden */
+    text-shadow: #FFD710;
+    color: rgb(255, 255, 255); /* Text color */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px; /* Add margin to the right of the button */
+    font-weight: bold;
+}
+
+#imageInput {
+    background-color: #f8f8f8; /* Off White */
+    color: #333; /* Text color */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 button:hover {
     background-color: #45a049;
 }
@@ -37,6 +71,8 @@ img {
     max-width: 100%; /* Make images responsive */
     height: auto;
 }
+
+
 
 /* Horizontal Alignment for Result Images */
 .result-images {
@@ -52,8 +88,29 @@ img {
     height: auto;
 }
 
+#content{
+    color: #FFD710; /* Text color */
+    margin-top: 20px;
+    text-align: center; /* Center align the form */
+    font-weight: bolder;
+    font-size: large;
+    background-color: #4c3228;
+
+}
+
+
 /* Media Query for Mobile Devices */
-@media only screen and (max-width: 600px) {
+@media only screen and (min-width: 600px) {
+    form {
+        margin-top: 40px; /* Adjust the margin as needed */
+        width: 80%; /* Adjust the width as needed */
+        max-width: 600px; /* Set a maximum width for the form */
+        padding: 30px; /* Adjust the padding as needed */
+        box-sizing: border-box; /* Include padding in the total width */
+        margin-left: auto; /* Center the form horizontally */
+        margin-right: auto; /* Center the form horizontally */
+    }
+    
     body {
         margin: 10px;
     }

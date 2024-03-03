@@ -6,53 +6,54 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='image/favicon.ico') }}" type="image/x-icon">
 
-<!--
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
-    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    
-    Note: These scripts are downloaded offline inorder to avoid any sort of trouble if API changes etc.
--->
-
     <script type="text/javascript" src="static/js/jquery.min.js"></script>
     <script type="text/javascript" src="static/js/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="static/js/html2canvas.min.js"></script>
     <script type="text/javascript" src="static/js/html_to_pdf_download.js"></script>
+
 </head>
 
 <body>
-    
-    <div id="content">   <!-- In js we have content as id -->
+    <div id="content">
+        <h1>Pose Estimation Results</h1>
+
         {% for i in range(0, input_image|length) %}
-        <h1>Result</h1>
-        <h2>Input Image:</h2>
+        <h2 style="margin-top: 20px; text-align: center; ">Input Image</h2>
         <img src="{{ input_image[i] }}" alt="Input Image">
-        <h2>Output Image:</h2>
+        <h2 style="margin-top:10px;">Output Image</h2>
         <img src="{{ output_image[i] }}" alt="Output Image">
         <b><p>Detected Object: {{ detected_object }}</p></b>
-        
+
         {% if detected_object == 'cow' %}
-            <b><p>Object Count: {{ object_count }}</p></b>
-            <b><p>Pose: {{ pose }}</p></b>
-            <b><p>Height: {{ height }}</p></b>
+        <b><p>Object Count: {{ object_count }}</p></b>
+        <b><p>Pose: {{ pose }}</p></b>
+        <b><p>Height: {{ height }}</p></b>
         {% endif %}
-    
 
-    {% endfor %}
-    <br>
-    <br>
+        {% if detected_object == 'other' or detected_object is none %}
+        <b><p>No single cow is detected in the given image</p></b>
+        {% endif %}
 
+        {% endfor %}
+        <br>
+        <br>
+        <br>
     </div>
+
     <button id="downloadPdf" style="display: block; margin: 20px auto;">Download PDF</button>
-    
 
     <script>
         // Use class instead of ID for the button selector to handle multiple buttons
         $('#downloadPdf').click(function () {
             CreatePDFfromHTML();
         });
-    </script>
 
+        
+    </script>
+    
+
+    
 </body>
 
 </html>

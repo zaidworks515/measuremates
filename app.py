@@ -23,6 +23,7 @@ thread_lock = threading.Lock()
 @app.before_request
 def load_model():
     model = YOLO(os.path.join(app.root_path, 'static/model/best_pose_model.pt'))
+    # model = YOLO(os.path.join(app.root_path, 'static/model/last.pt'))
 
     g.model = model
 
@@ -37,10 +38,8 @@ def model_implementation(image):
         # image = cv2.imread(image)
         model = g.model
         
-        if model is None:
-            return 'MODEL IS NOT LOADED', None
         
-        results = model(source=image, save=False, conf=0.75, task='pose')
+        results = model(source=image, save=False, conf=0.80, task='pose')
         
         predicted_data = json.loads(results[0].tojson())  #[{ list of dict }] + all of the output in json format to see what object is detected marked
 
@@ -60,7 +59,8 @@ def model_implementation(image):
         
         for item in predicted_data:
             if item.get('name', '') == 'other' or item == []:
-                detected_object = 'Other'
+                detected_object = 'other'
+                
             
             elif item.get('name', '') == 'cow':
                 detected_object = 'cow'
@@ -82,8 +82,9 @@ def model_implementation(image):
                     if d['x'] == 0.0 and d['y'] == 0.0:   # If x,y is 0 which means the object is not present in the photo therefore, z=0
                         d['z'] = 0.0
 
+
+
                 # POSE DETECTION WORKING....
-                pose= ''
 
                 if (list_of_dicts[1].get('x') == 0 and list_of_dicts[2].get('x') != 0) and list_of_dicts[10].get('x') == 0:
                     pose ='left'
@@ -91,15 +92,13 @@ def model_implementation(image):
                 elif (list_of_dicts[1].get('x') != 0 and list_of_dicts[2].get('x') == 0) and list_of_dicts[10].get('x') == 0:
                     pose ='right'
                 else:
-                    print('Retake the photo')
+                    pose=None
                             
                 # HEIGHT ESTIMATION WORKING....
                 if pose == 'left':
                     first_foot = list_of_dicts[4]  # left front foot
                     second_foot = list_of_dicts[5] # left back foot
-                    
-                    height=''
-                    
+                                        
                     for h in [first_foot, second_foot]:
                         if (h.get('x') and h.get('y')) > 800:
                             height='normal'
@@ -127,7 +126,7 @@ def model_implementation(image):
                 
                 
         predicted_image = results[0].plot() # plotted image
-
+    
         output_image_path = os.path.join(output_image_save, 'output_image.jpeg')
         input_image_path = os.path.join(input_image_save, 'input_image.jpeg')
         cv2.imwrite(output_image_path, predicted_image)
@@ -137,7 +136,7 @@ def model_implementation(image):
 
     except Exception as e:
         logging.exception("An error occurred: %s", str(e))
-        return None, None, None, None, None, None  # Return None in case of error
+        return e
     
     
 
@@ -147,6 +146,7 @@ def prediction():
         try:
             with thread_lock:
                 loaded_image = request.files['image']
+
                 image_stream = loaded_image.stream
                 image_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
                 image = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)

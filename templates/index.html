@@ -4,13 +4,55 @@
     <title>MeasureMates</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='image/favicon.ico') }}" type="image/x-icon">
-
 </head>
 <body>
     <h1>Upload Image</h1>
-    <form action="/evaluate" method="post" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*" required multiple>
-        <button type="submit">Evaluate</button>
+    
+    <form action="/evaluate" method="post" enctype="multipart/form-data" id="uploadForm">
+        <input type="file" name="image" accept="image/*" required id="imageInput" onchange="previewImage(event)">
+        <img id="uploadedImagePreview" alt="Uploaded Image Preview" style="display: none; max-width: 100%; margin-top: 10px;">
+        
+        <p id="errorMessage"></p>
+        <br>    
+        <br>    
+        <button type="submit" id="evaluateButton" onclick="evaluateImage()">Evaluate</button>
     </form>
+
+    <br>
+    <br>
+
+    <script>
+        function previewImage(event) {
+            const fileInput = event.target;
+            const uploadedImagePreview = document.getElementById('uploadedImagePreview');
+            const errorMessage = document.getElementById('errorMessage');
+    
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+    
+                reader.readAsDataURL(fileInput.files[0]);
+    
+                reader.onload = function (e) {
+                    const imageFormat = fileInput.files[0].type.toLowerCase();
+                    const validFormats = ['image/jpeg', 'image/jpg', 'image/png'];
+    
+                    if (validFormats.includes(imageFormat)) {
+                        uploadedImagePreview.src = e.target.result;
+                        uploadedImagePreview.style.display = 'block'; // Display the image preview
+                        errorMessage.style.display = 'none'; // Hide the error message
+                    } else {
+                        errorMessage.innerHTML = 'Invalid image format. Please upload a jpg, jpeg, or png file.';
+                        errorMessage.style.color = 'orange'; // Set warning message color
+                        errorMessage.style.display = 'block'; // Display the warning message
+                        uploadedImagePreview.style.display = 'none'; // Hide the image preview if the format is invalid
+                    }
+                };
+            } else {
+                uploadedImagePreview.style.display = 'none'; // Hide the image preview if no file is selected
+                errorMessage.innerHTML = 'Please select an image file.';
+                errorMessage.style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>

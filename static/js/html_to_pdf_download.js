@@ -1,35 +1,37 @@
 function CreatePDFfromHTML() {
-   var HTML_Width = $("#content").width();
-   var HTML_Height = $("#content").height();
-   var top_left_margin = 15;
-   var PDF_Width = HTML_Width + (top_left_margin * 2);
-   var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
-   var canvas_image_width = HTML_Width;
-   var canvas_image_height = HTML_Height;
+    var HTML_Width = $("#content").width();
+    var HTML_Height = $("#content").height();
+    var top_left_margin = 15;
+    var PDF_Width = HTML_Width + (top_left_margin * 2);
+    var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
 
-   var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    canvas.width = HTML_Width;
+    canvas.height = HTML_Height;
 
-   html2canvas($("#content")[0]).then(function (canvas) {
-       var imgData = canvas.toDataURL("image/jpeg", 1.0);
-       var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+    // Set background color
+    context.fillStyle = "#4c3228";
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
-       // Set background color to brown
-       pdf.setFillColor(139, 69, 19); // Brown color
+    // Apply styles to mimic the appearance of the HTML content
+    context.font = "bold large Arial, sans-serif";
+    context.fillStyle = "#FFD710";  // Text color
 
-       // Add a rectangle with the background color
-       pdf.rect(0, 0, PDF_Width, PDF_Height, 'F');
+    // Render text content
+    context.fillText("Pose Estimation Results", 15, 40);
 
-       // Add the image with the background color
-       pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+    // Get the HTML content element
+    var contentElement = document.getElementById('content');
 
-       for (var i = 1; i <= totalPDFPages; i++) {
-           pdf.addPage(PDF_Width, PDF_Height);
-           pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
-       }
-       pdf.save("results.pdf");
-   });
+    // Render HTML content to canvas
+    html2canvas(contentElement, { canvas: canvas }).then(function (canvas) {
+        var imgData = canvas.toDataURL("image/jpeg", 1.0);
+        var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+
+        // Add the image with the background color
+        pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, HTML_Width, HTML_Height);
+
+        pdf.save("results.pdf");
+    });
 }
-
-$('#downloadPdf').click(function () {
-   CreatePDFfromHTML();
-});
