@@ -6,16 +6,15 @@
     <link rel="icon" href="{{ url_for('static', filename='image/favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
-    <h1>Upload Image</h1>
+    <h1>Upload Images</h1>
     
     <form action="/evaluate" method="post" enctype="multipart/form-data" id="uploadForm">
-        <input type="file" name="image" accept="image/*" required id="imageInput" onchange="previewImage(event)">
-        <img id="uploadedImagePreview" alt="Uploaded Image Preview" style="display: none; max-width: 100%; margin-top: 10px;">
-        
+        <input type="file" name="images" accept="image/*" multiple required id="imageInput" onchange="previewImage(event)">
+        <div id="imagePreviewContainer"></div>
         <p id="errorMessage"></p>
         <br>    
         <br>    
-        <button type="submit" id="evaluateButton" onclick="evaluateImage()">Evaluate</button>
+        <button type="submit" id="evaluateButton">Evaluate</button>
     </form>
 
     <br>
@@ -24,33 +23,37 @@
     <script>
         function previewImage(event) {
             const fileInput = event.target;
-            const uploadedImagePreview = document.getElementById('uploadedImagePreview');
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
             const errorMessage = document.getElementById('errorMessage');
+            imagePreviewContainer.innerHTML = ''; // Clear previous previews
     
             if (fileInput.files.length > 0) {
-                const reader = new FileReader();
+                const validFormats = ['image/jpeg', 'image/jpg', 'image/png'];
+
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const reader = new FileReader();
+                    const file = fileInput.files[i];
     
-                reader.readAsDataURL(fileInput.files[0]);
+                    if (validFormats.includes(file.type.toLowerCase())) {
+                        const img = document.createElement('img');
+                        img.style.maxWidth = '100%';
+                        img.style.marginTop = '10px';
     
-                reader.onload = function (e) {
-                    const imageFormat = fileInput.files[0].type.toLowerCase();
-                    const validFormats = ['image/jpeg', 'image/jpg', 'image/png'];
+                        reader.onload = function (e) {
+                            img.src = e.target.result;
+                            imagePreviewContainer.appendChild(img);
+                        };
     
-                    if (validFormats.includes(imageFormat)) {
-                        uploadedImagePreview.src = e.target.result;
-                        uploadedImagePreview.style.display = 'block'; // Display the image preview
-                        errorMessage.style.display = 'none'; // Hide the error message
+                        reader.readAsDataURL(file);
                     } else {
-                        errorMessage.innerHTML = 'Invalid image format. Please upload a jpg, jpeg, or png file.';
+                        errorMessage.innerHTML = 'Invalid image format. Please upload jpg, jpeg, or png files only.';
                         errorMessage.style.color = 'orange'; // Set warning message color
                         errorMessage.style.display = 'block'; // Display the warning message
-                        uploadedImagePreview.style.display = 'none'; // Hide the image preview if the format is invalid
                     }
-                };
+                }
             } else {
-                uploadedImagePreview.style.display = 'none'; // Hide the image preview if no file is selected
-                errorMessage.innerHTML = 'Please select an image file.';
-                errorMessage.style.display = 'block';
+                errorMessage.innerHTML = 'Please select at least one image file.';
+                errorMessage.style.display = 'block'; // Display the error message
             }
         }
     </script>

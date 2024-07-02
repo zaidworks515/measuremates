@@ -1,31 +1,48 @@
-/* Add your styling here */
-
-#uploadedImage, #uploadedImageLabel, #errorMessage {
-    display: none; 
-    max-width: 100%;
-    height: auto;
-    color: red; /* Set the color for the error message */
-}
-
+/* General styles */
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    background-color: #4c3228; 
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    margin: 0;
-    padding: 0;
-    height: 100vh; /* Set the body height to 100% of the viewport height */
+    background-color: #eff6fb; /* Light blue background */
 }
 
 h1, h2 {
-    color: #FFD710;
+    color: #4c6e91; /* Dark blue text color */
 }
 
-form {
+.pose-data {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff; /* White background for each pose data */
+}
+
+.image-container {
+    text-align: center;
+}
+
+.image-container img {
+    max-width: 100%; /* Make images responsive */
+    height: auto;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+#total-weight {
     margin-top: 20px;
-    text-align: center; /* Center align the form */
 }
 
 button {
@@ -35,87 +52,35 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-right: 10px; /* Add margin to the right of the button */
-}
-
-#evaluateButton {
-    background-color: #cbb32a; /* Golden */
-    text-shadow: #FFD710;
-    color: rgb(255, 255, 255); /* Text color */
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 10px; /* Add margin to the right of the button */
-    font-weight: bold;
-}
-
-#imageInput {
-    background-color: #f8f8f8; /* Off White */
-    color: #333; /* Text color */
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    display: block;
+    margin: 20px auto;
 }
 
 button:hover {
     background-color: #45a049;
 }
 
-img {
-    margin-top: 10px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 100%; /* Make images responsive */
-    height: auto;
-}
-
-
-
-/* Horizontal Alignment for Result Images */
-.result-images {
-    display: flex;
-    flex-wrap: wrap; /* Allow images to wrap on smaller screens */
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.result-images img {
-    width: 100%; /* Make images take full width on smaller screens */
-    max-width: 48%; /* Adjust the width as needed */
-    height: auto;
-}
-
-#content{
-    color: #FFD710; /* Text color */
-    margin-top: 20px;
-    text-align: center; /* Center align the form */
-    font-weight: bolder;
-    font-size: large;
-    background-color: #4c3228;
-
-}
-
-
-/* Media Query for Mobile Devices */
-@media only screen and (min-width: 600px) {
-    form {
-        margin-top: 40px; /* Adjust the margin as needed */
-        width: 80%; /* Adjust the width as needed */
-        max-width: 600px; /* Set a maximum width for the form */
-        padding: 30px; /* Adjust the padding as needed */
-        box-sizing: border-box; /* Include padding in the total width */
-        margin-left: auto; /* Center the form horizontally */
-        margin-right: auto; /* Center the form horizontally */
+/* Media queries for responsiveness */
+@media screen and (max-width: 768px) {
+    .image-container img {
+        max-width: 100%;
+        height: auto;
     }
-    
-    body {
-        margin: 10px;
-    }
+}
 
+@media screen and (max-width: 600px) {
+    h1 {
+        font-size: 24px; /* Adjust heading size for smaller screens */
+    }
+    .pose-data {
+        padding: 8px;
+    }
+    table, th, td {
+        padding: 6px;
+        font-size: 14px; /* Adjust table font size */
+    }
     button {
-        margin-right: 0; /* Remove right margin for buttons on small screens */
+        padding: 8px 12px;
+        font-size: 14px; /* Adjust button font size */
     }
 }

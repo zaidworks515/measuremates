@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Result</title>
+    <title>Report</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='image/favicon.ico') }}" type="image/x-icon">
 
@@ -11,49 +11,114 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="static/js/html2canvas.min.js"></script>
     <script type="text/javascript" src="static/js/html_to_pdf_download.js"></script>
-
 </head>
 
 <body>
     <div id="content">
-        <h1>Pose Estimation Results</h1>
+        <h1>Report</h1>
 
-        {% for i in range(0, input_image|length) %}
-        <h2 style="margin-top: 20px; text-align: center; ">Input Image</h2>
-        <img src="{{ input_image[i] }}" alt="Input Image">
-        <h2 style="margin-top:10px;">Output Image</h2>
-        <img src="{{ output_image[i] }}" alt="Output Image">
-        <b><p>Detected Object: {{ detected_object }}</p></b>
+        <!-- Front Pose Data -->
+        <div class="pose-data">
+            <h2>Front Pose Output</h2>
+            <div class="image-container">
+                <img src="{{ front_pose_complete_data[0] }}" alt="Front Pose Output Image">
+                <img src="{{ front_pose_complete_data[4] }}" alt="Front Pose Segmented Image">
+            </div>
+            <table>
+                <tr>
+                    <td><b>Detected Object:</b></td>
+                    <td>{{ front_pose_complete_data[2] }}</td>
+                </tr>
+                <tr>
+                    <td><b>Object Count:</b></td>
+                    <td>{{ front_pose_complete_data[3] }}</td>
+                </tr>
+                <tr>
+                    <td><b>Height:</b></td>
+                    <td>{{ front_pose_complete_data[1] }}</td>
+                </tr>
+            </table>
+        </div>
 
-        {% if detected_object == 'cow' %}
-        <b><p>Object Count: {{ object_count }}</p></b>
-        <b><p>Pose: {{ pose }}</p></b>
-        <b><p>Height: {{ height }}</p></b>
-        {% endif %}
+        <!-- Side Pose Data -->
+        <div class="pose-data">
+            <h2>Side Pose Output</h2>
+            <div class="image-container">
+                <img src="{{ side_pose_complete_data[0] }}" alt="Side Pose Output Image">
+                <img src="{{ side_pose_complete_data[4] }}" alt="Side Pose Segmented Image">
+            </div>
+            <table>
+                <tr>
+                    <td><b>Detected Object:</b></td>
+                    <td>{{ side_pose_complete_data[2] }}</td>
+                </tr>
+                <tr>
+                    <td><b>Object Count:</b></td>
+                    <td>{{ side_pose_complete_data[3] }}</td>
+                </tr>
+                <tr>
+                    <td><b>Height:</b></td>
+                    <td>{{ side_pose_complete_data[1] }}</td>
+                </tr>
+            </table>
+        </div>
 
-        {% if detected_object == 'other' or detected_object is none %}
-        <b><p>No single cow is detected in the given image</p></b>
-        {% endif %}
+        <!-- Back Pose Data -->
+        <div class="pose-data">
+            <h2>Back Pose Output</h2>
+            <div class="image-container">
+                <img src="{{ back_pose_complete_data[0] }}" alt="Back Pose Output Image">
+                <img src="{{ back_pose_complete_data[4] }}" alt="Back Pose Segmented Image">
+            </div>
+            <table>
+                <tr>
+                    <td><b>Detected Object:</b></td>
+                    <td>{{ back_pose_complete_data[2] }}</td>
+                </tr>
+                <tr>
+                    <td><b>Object Count:</b></td>
+                    <td>{{ back_pose_complete_data[3] }}</td>
+                </tr>
+                <tr>
+                    <td><b>Height:</b></td>
+                    <td>{{ back_pose_complete_data[1] }}</td>
+                </tr>
+            </table>
+        </div>
 
-        {% endfor %}
-        <br>
-        <br>
-        <br>
+        <!-- Total Weight and Breed -->
+        <div id="total-weight">
+            <table>
+                <tr>
+                    <td><b>Breed:</b></td>
+                    <td>{{ side_pose_complete_data[6] }}</td>
+                </tr>
+                <tr>
+                    <td><b>Total Weight:</b></td>
+                    <td>{{ total_weight }}</td>
+                </tr>
+            </table>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            
+
+        </div>
+
+        <!-- Download PDF Button -->
+        <button id="downloadPdf" style="display: block; margin: 20px auto;">Download PDF</button>
+
     </div>
-
-    <button id="downloadPdf" style="display: block; margin: 20px auto;">Download PDF</button>
 
     <script>
         // Use class instead of ID for the button selector to handle multiple buttons
         $('#downloadPdf').click(function () {
             CreatePDFfromHTML();
         });
-
-        
     </script>
-    
-
-    
 </body>
 
 </html>
