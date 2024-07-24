@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Report</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='image/favicon.ico') }}" type="image/x-icon">
-
-    <script type="text/javascript" src="static/js/jquery.min.js"></script>
-    <script type="text/javascript" src="static/js/jspdf.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jspdf.min.js') }}"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script type="text/javascript" src="static/js/html2canvas.min.js"></script>
-    <script type="text/javascript" src="static/js/html_to_pdf_download.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/html2canvas.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/html_to_pdf_download.js') }}"></script>
 </head>
-
 <body>
     <div id="content">
         <h1>Report</h1>
@@ -90,26 +87,30 @@
         <div id="total-weight">
             <table>
                 <tr>
+                    <td><b>Structure Analysis:</b></td>
+                    <td>{{ side_pose_complete_data[7] }}</td>
+                </tr>
+                <tr>
                     <td><b>Breed:</b></td>
                     <td>{{ side_pose_complete_data[6] }}</td>
                 </tr>
                 <tr>
-                    <td><b>Total Weight:</b></td>
+                    <td><b>Estimated Weight:</b></td>
                     <td>{{ total_weight }}</td>
                 </tr>
+                <tr>
+                    <td><b>Estimated Price:</b></td>
+                    <td>{{ price }}</td>
+                </tr>
             </table>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            
-
         </div>
-
-        <!-- Download PDF Button -->
-        <button id="downloadPdf" style="display: block; margin: 20px auto;">Download PDF</button>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div id="footer">
+        <button id="downloadPdf" style="display: block; margin: 20px auto;">Download report</button>
 
     </div>
 
@@ -120,5 +121,4 @@
         });
     </script>
 </body>
-
 </html>

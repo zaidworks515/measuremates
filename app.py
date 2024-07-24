@@ -5,11 +5,13 @@ from ultralytics import YOLO
 from werkzeug.exceptions import HTTPException
 import logging
 import threading
-from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 import json
 import joblib
+from hijri_converter import convert
+from datetime import datetime
+from image_caption import caption_generator
 
 
 app = Flask(__name__)
@@ -28,7 +30,7 @@ def load_models():
     pose_model = YOLO(os.path.join(app.root_path, 'static/models/best_pose_model.pt'))
     seg_model = YOLO(os.path.join(app.root_path, 'static/models/best_seg_model.pt'))
     breed_model = YOLO(os.path.join(app.root_path, 'static/models/best_breed_classification_model.pt')) 
-    weight_model_path = os.path.join(app.root_path, 'static/models/cow_weight_predictor(GradientBoostingRegressor+Transformer).pkl')
+    weight_model_path = os.path.join(app.root_path, 'static/models/cow_weight_predictor(ExtraTreesRegressor+Transformer).pkl')
     weight_model = joblib.load(weight_model_path)
     
 
@@ -101,14 +103,58 @@ def weight_estimation(predicted_keypoints, pixel_details, pose_bbox, org_image_s
     mapping = {'l_side': 0, 'r_side': 1, 'back': 2, 'front': 3}
     new_dataframe['pose'] = new_dataframe['pose'].map(mapping)
     
-    scaler=StandardScaler()
-    processed_dataframe=scaler.fit_transform(new_dataframe) 
+    scaler_path='static/models/fitted_scaler.pkl'
+    scaler=joblib.load(scaler_path)
+    processed_dataframe=scaler.transform(new_dataframe) 
     weight=weight_model.predict(processed_dataframe)
     weight=weight.item()
 
-    
-    
     return weight
+
+
+
+def price_calculation(weight):
+    eid_condition=None
+    factor_value =None
+    
+    price_kg=40000/40
+    
+    current_date = datetime.now().date()
+    hijri_date = convert.Gregorian(current_date.year, current_date.month, current_date.day).to_hijri()
+    hijri_month = hijri_date.month 
+    
+    if hijri_month == 12:
+        if hijri_date.day >= 10:
+            eid_condition = 0.8
+        else:
+            eid_condition = 1.45
+    else:
+        eid_condition = 1.0  # Default condition for other months
+        
+    hijri_months_factor={
+            1 : 1.2,
+            2 : 1,
+            3 : 1.3,
+            4 : 1,
+            5 : 1,
+            6 : 1,
+            7 : 1.1,
+            8 : 1.15,
+            9 : 1.2,
+            10 : 1.3,
+            11 : 1.35,
+            12 : eid_condition 
+                    }
+    
+    for h in hijri_months_factor:
+        if h == hijri_month:
+            factor_value=hijri_months_factor[h]
+    
+
+    price=int((price_kg*factor_value) * weight)
+    
+    return price
+
 
 
 def model_implementation(image, filename):
@@ -116,7 +162,7 @@ def model_implementation(image, filename):
         pose_model = g.model1
         seg_model = g.model2
         breed_model = g.model3
-        org_image_shapes=(4000,3000)
+        org_image_shapes=(4064,3048)
 
         
         def pose_image_output(pose):
@@ -152,44 +198,46 @@ def model_implementation(image, filename):
                 return e
 
         
-                
         pose_results = pose_model(source=image, save=False, task='pose', conf=0.6)
-        pose_predicted_data = json.loads(pose_results[0].tojson())  #[{ list of dict }] + all of the output in json format to see what object is detected marked
         
-        pose_bbox_list = pose_results[0].boxes.xyxy[0].tolist()
-        pose_bbox = [int(coord) for coord in pose_bbox_list]
-        cropped_image = image.copy()
-        
-        cropped_image[:pose_bbox[1], :, :] = 0  # Set pixels above the bounding box to black
-        cropped_image[pose_bbox[3]:, :, :] = 0  # Set pixels below the bounding box to black
-        cropped_image[:, :pose_bbox[0], :] = 0  # Set pixels to the left of the bounding box to black
-        cropped_image[:, pose_bbox[2]:, :] = 0  # Set pixels to the right of the bounding box to black
+        try:
+            pose_predicted_data = json.loads(pose_results[0].tojson())  #[{ list of dict }] + all of the output in json format to see what object is detected marked
+            pose_bbox_list = pose_results[0].boxes.xyxy[0].tolist()
+            pose_bbox = [int(coord) for coord in pose_bbox_list]
+            cropped_image = image.copy()
+            
+            cropped_image[:pose_bbox[1], :, :] = 0  # Set pixels above the bounding box to black
+            cropped_image[pose_bbox[3]:, :, :] = 0  # Set pixels below the bounding box to black
+            cropped_image[:, :pose_bbox[0], :] = 0  # Set pixels to the left of the bounding box to black
+            cropped_image[:, pose_bbox[2]:, :] = 0  # Set pixels to the right of the bounding box to black
 
+            seg_results = seg_model(source=cropped_image, save=False, task='segment')
+            
 
-        seg_results = seg_model(source=cropped_image, save=False, task='segment')
-        
+            H, W, _ = image.shape
 
-        H, W, _ = image.shape
+            for result in seg_results:
+                for j, mask in enumerate(result.masks.data):
+                    # Convert mask to numpy array and scale to 255
+                    mask = (mask.cpu().numpy() * 255).astype(np.uint8)
+                    
+                    # Resize mask to match the original image size
+                    resized_mask = cv2.resize(mask, (W, H))
+                    
+                    # Threshold the mask to get a binary mask
+                    _, binary_mask = cv2.threshold(resized_mask, 128, 255, cv2.THRESH_BINARY)
+                    
+                    # Count white and black pixels in the binary mask
+                    white_pixels = np.count_nonzero(binary_mask == 255)
+                    black_pixels = np.count_nonzero(binary_mask == 0)
+                    
+                    pixel_details=[white_pixels,black_pixels]
+        except:
+            return pose_predicted_data   # empty list will be return 
+            
 
-        for result in seg_results:
-            for j, mask in enumerate(result.masks.data):
-                # Convert mask to numpy array and scale to 255
-                mask = (mask.cpu().numpy() * 255).astype(np.uint8)
                 
-                # Resize mask to match the original image size
-                resized_mask = cv2.resize(mask, (W, H))
-                
-                # Threshold the mask to get a binary mask
-                _, binary_mask = cv2.threshold(resized_mask, 128, 255, cv2.THRESH_BINARY)
-                
-                # Count white and black pixels in the binary mask
-                white_pixels = np.count_nonzero(binary_mask == 255)
-                black_pixels = np.count_nonzero(binary_mask == 0)
-                
-                pixel_details=[white_pixels,black_pixels]
-
-                
-        # Required Variables
+        # Required Variables assignments
         detected_object = None
         pose = None
         height = None
@@ -198,7 +246,7 @@ def model_implementation(image, filename):
         seg_output_image_path = None
         weight_data= 0
         breed_output = None
-        
+        image_caption = None
         
         
         """ Logic: We have 2 classes in our dataset which are 'cow' and 'other'. If there is no object detected or
@@ -248,6 +296,8 @@ def model_implementation(image, filename):
         """
         
         if filename == 'side_pose.jpg' and detected_object =='cow' and count == 1:
+            
+            image_caption=caption_generator(cropped_image)
                 
             if (predicted_keypoints[1].get('x') == 0 and predicted_keypoints[2].get('x') != 0) and predicted_keypoints[10].get('x') == 0 and predicted_keypoints[11].get('x') != 0:
                 pose ='l_side'
@@ -301,7 +351,7 @@ def model_implementation(image, filename):
            
                 cropped_image2 = image[int(pose_bbox[1]*0.7):int(pose_bbox[3]*1.07), int(pose_bbox[0]*0.7):int(pose_bbox[2]*1.07)]
  
-                breed_results = breed_model(source=cropped_image2, save=False, conf=0.6)
+                breed_results = breed_model(source=cropped_image2, save=False, conf=0.4)
                 names_dict=breed_results[0].names
                 probs=breed_results[0].probs
                 probs_list=probs.data.tolist()
@@ -333,7 +383,6 @@ def model_implementation(image, filename):
                     seg_output_image_path = seg_image_output(pose)
                     weight_data = weight_estimation(predicted_keypoints, pixel_details, pose_bbox, org_image_shapes, pose)
                     
-                    
             else:
                 pose=None
                 
@@ -361,7 +410,6 @@ def model_implementation(image, filename):
                     weight_data = weight_estimation(predicted_keypoints, pixel_details, pose_bbox, org_image_shapes, pose)
                     
                 
-                
             else:
                 pose=None
             
@@ -369,12 +417,11 @@ def model_implementation(image, filename):
             pose='unidentified'
         
 
-        return pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output 
+        return pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output, image_caption
 
     except Exception as e:
         logging.exception("An error occurred: %s", str(e))
         return e
-    
     
 
 @app.route('/evaluate', methods=['GET', 'POST'])
@@ -401,50 +448,111 @@ def prediction():
                     if file.filename == 'side_pose.jpg':
                         filename = file.filename
                         image = image_stream(file)
-
-                        pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output = model_implementation(image, filename)
-                        side_pose_complete_data = [pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output]
+                        try:
+                            pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output, image_caption = model_implementation(image, filename)
+                            side_pose_complete_data = [pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output, image_caption]
+                        except:
+                            side_pose_complete_data = ['side pose of cow is not detected', 'Unknown', 'Unknown', 'None', None, 0, 'Unknown', 'Unknown']
+                            continue
 
                     elif file.filename == 'front_pose.jpg':
                         filename = file.filename
                         image = image_stream(file)
-
-                        pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output = model_implementation(image, filename)
-                        front_pose_complete_data = [pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output]
+                        try:
+                            pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output, image_caption = model_implementation(image, filename)
+                            front_pose_complete_data = [pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output, image_caption]
+                        except:
+                            front_pose_complete_data = ['front pose of cow is not detected', 'Unknown', 'Unknown', 'None', None, 0, 'Unknown', 'Unknown']
+                            continue
 
                     elif file.filename == 'back_pose.jpg':
                         filename = file.filename
                         image = image_stream(file)
-
-                        pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output = model_implementation(image, filename)
-                        back_pose_complete_data = [pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output]
+                        try:
+                            pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output, image_caption = model_implementation(image, filename)
+                            back_pose_complete_data = [pose_output_image_path, height, detected_object, object_count, seg_output_image_path, weight_data, breed_output, image_caption]
+                        except:
+                            back_pose_complete_data = ['back pose of cow is not detected', 'Unknown', 'Unknown', 'None', None, 0, 'Unknown', 'Unknown']
+                            continue
 
                 # Calculate total weight if all three poses are provided
-                total_weight = (side_pose_complete_data[5]+front_pose_complete_data[5]+back_pose_complete_data[5])
-                total_weight = f"{total_weight:.2f} kgs"
-                print(f"THE TOTAL WEIGHT OF THE COW IS::::: {total_weight}")
-                
-                return render_template('result.html',
-                                       side_pose_complete_data=side_pose_complete_data,
-                                       front_pose_complete_data=front_pose_complete_data,
-                                       back_pose_complete_data=back_pose_complete_data,
-                                       total_weight=total_weight
-                                       )
+                total_weight = (side_pose_complete_data[5] + front_pose_complete_data[5] + back_pose_complete_data[5])
+                weight_in_mun = total_weight / 40
 
-        except HTTPException as e:  # specific exception.. used because it is common 
+                str_total_weight = f"{int(total_weight)} ± {int(total_weight * 0.10)} kgs  ==  {weight_in_mun:.2f} ± {weight_in_mun * 0.10:.2f} mun "
+                price = price_calculation(total_weight)
+                str_price = f"PKR {int(price * 0.9)} to PKR {int(price * 1.1)}"
+
+                result = {
+                    'side_pose_complete_data': side_pose_complete_data,
+                    'front_pose_complete_data': front_pose_complete_data,
+                    'back_pose_complete_data': back_pose_complete_data,
+                    'total_weight': str_total_weight,
+                    'price': str_price
+                }
+
+                save_last_result(result)
+
+                return render_template('result.html', **result)
+
+        except HTTPException as e:
             logging.error("HTTP version not supported: %s", str(e))
             return render_template('error.html', error_message=str(e), code=e.code)
 
-        except Exception as e:  # to catch all others
-            logging.exception("An error occurred: %s", str(e))  # to maintain logs
-            return render_template('error.html', error_message=str(e), code=500)  # UI         
+        except Exception as e:
+            logging.exception("An error occurred: %s", str(e))
+            return render_template('error.html', error_message=str(e), code=500)
 
     else:
         return render_template('index.html')
+    
+    
+result_file = 'assets/last_result.json'
 
+def save_last_result(result):
+    try:
+        os.makedirs(os.path.dirname(result_file), exist_ok=True)
+        with open(result_file, 'w') as f:
+            json.dump(result, f)
+    except Exception as e:
+        logging.exception("An error occurred while saving the result: %s", str(e))
+
+
+
+result_file = 'assets/last_result.json'
+
+def load_last_result():
+    if os.path.exists(result_file):
+        with open(result_file, 'r') as f:
+            return json.load(f)
+    else:
+        return None
+
+
+
+def save_last_result(result):
+    try:
+        os.makedirs(os.path.dirname(result_file), exist_ok=True)
+        with open(result_file, 'w') as f:
+            json.dump(result, f)
+    except Exception as e:
+        logging.exception("An error occurred while saving the result: %s", str(e))
+
+
+    
+@app.route('/result', methods=['GET'])
+def show_last_result():
+    last_result = load_last_result()
+    if last_result:
+        return render_template('result.html', **last_result)
+    else:
+        return "No result available."    
+    
+ 
 
 if __name__ == "__main__":
     try:
-        app.run(debug=True, host='0.0.0.0', port=8080, threaded=True)
+        app.run(debug=True, host='0.0.0.0', port=80, threaded=True)
     except Exception as e:
         print(f"An error occurred: {str(e)}")
+        

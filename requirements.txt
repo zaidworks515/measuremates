@@ -4,9 +4,10 @@ pandas
 Python-IO
 pybase64
 numpy
-scikit-learn==1.4.2
+scikit-learn
 opencv-python
 opencv-contrib-python
 opencv-python-headless
 Werkzeug
 joblib
+hijri-converter
