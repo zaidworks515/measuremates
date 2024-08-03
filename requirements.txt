@@ -1,3 +1,4 @@
+tensorflow==2.13.1
 flask
 ultralytics
 pandas
