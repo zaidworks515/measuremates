@@ -2,11 +2,43 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    background-color: #eff6fb; /* Light blue background */
+    background-color: #A47945; /* Light brown background */
+    position: relative;
+    padding-top: 150px; /* Adjust padding to prevent overlap with logo */
+}
+
+.watermark-container {
+    position: relative;
+    overflow: hidden; 
+}
+
+.watermark {
+    position: fixed; /* Use fixed positioning to keep the watermark on top */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-40deg);
+    font-size: 120px; /* Adjust the size as needed */
+    color: rgba(200, 200, 200, 0.671); /* Light grey with transparency */
+    font-weight: bold;
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1000; /* Ensure watermark is on top of everything else */
+    width: 100%;
+    text-align: center;
 }
 
 h1, h2 {
-    color: #4c6e91; /* Dark blue text color */
+    color: black; /* Dark text color */
+}
+
+.logo {
+    position:absolute; /* Use fixed positioning to keep the logo in place */
+    top: 5px;
+    left: 10px;
+    width: 100px;
+    margin-bottom: 20px;
+    z-index: 1001; /* Ensure the logo stays on top of other elements */
 }
 
 .pose-data {
@@ -71,6 +103,7 @@ button:hover {
 @media screen and (max-width: 600px) {
     h1 {
         font-size: 24px; /* Adjust heading size for smaller screens */
+        text-align: center;
     }
     .pose-data {
         padding: 8px;

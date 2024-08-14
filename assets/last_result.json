@@ -1,1 +1,52 @@
-{"side_pose_complete_data": ["static/predicted_output/side_pose_output_image.jpg", "Not Normal", "cow", "1 cow detected in the given image", "static/predicted_output/side_seg_output_image.jpg", 101.5910748979224, "The Predicted breed is \"brahman cross\", with confidence of \"99\" %", "startsentence beautiful white brahman cattle of grown stage with excellent body weight structure and excellent growth rate"], "front_pose_complete_data": ["static/predicted_output/front_pose_output_image.jpg", "Not Normal", "cow", "1 cow detected in the given image", "static/predicted_output/front_seg_output_image.jpg", 13.876415173571617, null, null], "back_pose_complete_data": ["static/predicted_output/back_pose_output_image.jpg", "Not Normal", "cow", "1 cow detected in the given image", "static/predicted_output/back_seg_output_image.jpg", 53.93556384924942, null, null], "total_weight": "169 \u00b1 16 kgs  ==  4.24 \u00b1 0.42 mun ", "price": "PKR 182954 to PKR 223611"}
+{
+    "side_pose_complete_data": [
+        "static/predicted_output/side_pose_output_image.jpg",
+        "normal",
+        "cow",
+        "1 cow detected in the given image",
+        "static/predicted_output/side_seg_output_image.jpg",
+        99.45,
+        "The Predicted breed is \"brahman cross\", with confidence of \"87\" %",
+        [
+            "startsentence",
+            "beautiful",
+            "brown",
+            "brahman",
+            "cattle",
+            "of",
+            "grown",
+            "stage",
+            "with",
+            "excellent",
+            "body",
+            "weight",
+            "structure",
+            "and",
+            "excellent",
+            "growth",
+            "rate"
+        ]
+    ],
+    "front_pose_complete_data": [
+        "front_pose of cow is not detected",
+        "Unknown",
+        "Unknown",
+        "None",
+        null,
+        0,
+        "Unknown",
+        "Unknown"
+    ],
+    "back_pose_complete_data": [
+        "back_pose of cow is not detected",
+        "Unknown",
+        "Unknown",
+        "None",
+        null,
+        0,
+        "Unknown",
+        "Unknown"
+    ],
+    "total_weight": "99 \u00b1 9 kgs  ==  2.49 \u00b1 0.25 mun",
+    "price": "PKR 102,474 to PKR 125,246"
+}

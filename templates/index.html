@@ -1,61 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MeasureMates</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='image/favicon.ico') }}" type="image/x-icon">
-</head>
-<body>
-    <h1>Upload Images</h1>
-    
-    <form action="/evaluate" method="post" enctype="multipart/form-data" id="uploadForm">
-        <input type="file" name="images" accept="image/*" multiple required id="imageInput" onchange="previewImage(event)">
-        <div id="imagePreviewContainer"></div>
-        <p id="errorMessage"></p>
-        <br>    
-        <br>    
-        <button type="submit" id="evaluateButton">Evaluate</button>
-    </form>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #A47945; /* Light brown background */
+            position: relative;
+            padding-top: 150px; /* Adjust padding to prevent overlap with logo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            text-align: center;
+        }
 
-    <br>
-    <br>
+        .container {
+            max-width: 800px; /* Maximum width of the content */
+            width: 100%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
+        .watermark-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .watermark {
+            position: fixed; /* Use fixed positioning to keep the watermark on top */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-40deg);
+            font-size: 120px; /* Adjust the size as needed */
+            color: rgba(200, 200, 200, 0.671); /* Light grey with transparency */
+            font-weight: bold;
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1000; /* Ensure watermark is on top of everything else */
+            width: 100%;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: black; /* Dark text color */
+        }
+
+        .logo {
+            position: absolute; /* Use absolute positioning to keep the logo in place */
+            top: 5px;
+            left: 10px;
+            width: 100px;
+            margin-bottom: 20px;
+            z-index: 1001; /* Ensure the logo stays on top of other elements */
+        }
+
+        .pose-data {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff; /* White background for each pose data */
+        }
+
+        .image-container {
+            text-align: center;
+        }
+
+        .image-preview {
+            width: 500px;
+            height: 500px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+        }
+
+        .upload-section input[type="file"] {
+            display: block;
+            margin: 0 auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+        }
+
+        .upload-section input[type="file"]:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        #total-weight {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Media queries for responsiveness */
+        @media screen and (max-width: 768px) {
+            .image-preview {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            h1 {
+                font-size: 24px; /* Adjust heading size for smaller screens */
+                text-align: center;
+            }
+            .pose-data {
+                padding: 8px;
+            }
+            table, th, td {
+                padding: 6px;
+                font-size: 14px; /* Adjust table font size */
+            }
+            button {
+                padding: 8px 12px;
+                font-size: 14px; /* Adjust button font size */
+            }
+        }
+    </style>
     <script>
-        function previewImage(event) {
-            const fileInput = event.target;
-            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-            const errorMessage = document.getElementById('errorMessage');
-            imagePreviewContainer.innerHTML = ''; // Clear previous previews
-    
-            if (fileInput.files.length > 0) {
-                const validFormats = ['image/jpeg', 'image/jpg', 'image/png'];
-
-                for (let i = 0; i < fileInput.files.length; i++) {
-                    const reader = new FileReader();
-                    const file = fileInput.files[i];
-    
-                    if (validFormats.includes(file.type.toLowerCase())) {
-                        const img = document.createElement('img');
-                        img.style.maxWidth = '100%';
-                        img.style.marginTop = '10px';
-    
-                        reader.onload = function (e) {
-                            img.src = e.target.result;
-                            imagePreviewContainer.appendChild(img);
-                        };
-    
-                        reader.readAsDataURL(file);
-                    } else {
-                        errorMessage.innerHTML = 'Invalid image format. Please upload jpg, jpeg, or png files only.';
-                        errorMessage.style.color = 'orange'; // Set warning message color
-                        errorMessage.style.display = 'block'; // Display the warning message
-                    }
-                }
-            } else {
-                errorMessage.innerHTML = 'Please select at least one image file.';
-                errorMessage.style.display = 'block'; // Display the error message
+        function previewImage(event, previewContainerId) {
+            const previewContainer = document.getElementById(previewContainerId);
+            previewContainer.innerHTML = ''; // Clear previous previews
+            const files = event.target.files;
+            for (const file of files) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('image-preview');
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
             }
         }
     </script>
+</head>
+<body>
+    <div class="container">
+        <img src="../static/image/logo.jpg" alt="Logo" class="logo"> <!-- Add your logo here -->
+        <!-- <div class="watermark">MeasureMates</div> -->
+        <form action="/evaluate_web" method="post" enctype="multipart/form-data" id="uploadForm">
+            <div class="upload-section">
+                <h3>Front Pose</h3>
+                <input type="file" name="front_pose" accept="image/*" required id="frontImageInput" onchange="previewImage(event, 'frontImagePreviewContainer')">
+                <div id="frontImagePreviewContainer"></div>
+            </div>
+        
+            <div class="upload-section">
+                <h3>Side Pose</h3>
+                <input type="file" name="side_pose" accept="image/*" required id="sideImageInput" onchange="previewImage(event, 'sideImagePreviewContainer')">
+                <div id="sideImagePreviewContainer"></div>
+            </div>
+        
+            <div class="upload-section">
+                <h3>Back Pose</h3>
+                <input type="file" name="back_pose" accept="image/*" required id="backImageInput" onchange="previewImage(event, 'backImagePreviewContainer')">
+                <div id="backImagePreviewContainer"></div>
+            </div>
+        
+            <p id="errorMessage"></p>
+            <button type="submit" id="evaluateButton">Evaluate</button>
+        </form>
+        
+    </div>
 </body>
 </html>

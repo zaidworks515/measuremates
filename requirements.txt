@@ -1,5 +1,6 @@
 tensorflow==2.13.1
 flask
+Flask-Cors
 ultralytics
 pandas
 Python-IO
