@@ -1,119 +1,211 @@
-/* General styles */
+* {
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #A47945; /* Light brown background */
-    position: relative;
-    padding-top: 150px; /* Adjust padding to prevent overlap with logo */
+  background: linear-gradient(135deg, #a47945, #b86e43, #f4b79a);
+}
+nav {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 0 24px;
+  background-color: #3b3a3a;
+  height: 60px;
+}
+nav img {
+  width: 70px;
+  object-fit: contain;
 }
 
-.watermark-container {
-    position: relative;
-    overflow: hidden; 
+.flex {
+  margin: 100px 0 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+nav h1 {
+  color: #ffffff;
+  font-size: 16px;
+  letter-spacing: 4px;
+  font-weight: 450;
+  margin: 0px 24px;
+  text-transform: capitalize !important;
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.watermark {
-    position: fixed; /* Use fixed positioning to keep the watermark on top */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-40deg);
-    font-size: 120px; /* Adjust the size as needed */
-    color: rgba(200, 200, 200, 0.671); /* Light grey with transparency */
-    font-weight: bold;
-    white-space: nowrap;
-    user-select: none;
-    pointer-events: none;
-    z-index: 1000; /* Ensure watermark is on top of everything else */
-    width: 100%;
-    text-align: center;
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-h1, h2 {
-    color: black; /* Dark text color */
+
+.first-sec-section {
+  width: 400px;
+  color: #000000;
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+}
+.first-sec-section h2 {
+  font-weight: 600;
+  margin: 24px 0;
+  text-align: left;
+  font-size: 20px;
+}
+.first-sec-section h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 12px 0 3px 0;
+  text-align: left;
+}
+.first-sec-section button {
+  cursor: pointer;
+  background: #b86e43;
+  width: 100%;
+  color: #ffffff;
+  padding: 6px 0;
+  border: none;
+  border-radius: 20px;
+  margin: 24px 0 0 0;
 }
 
-.logo {
-    position:absolute; /* Use fixed positioning to keep the logo in place */
-    top: 5px;
-    left: 10px;
-    width: 100px;
-    margin-bottom: 20px;
-    z-index: 1001; /* Ensure the logo stays on top of other elements */
+.first-sec-section button:hover{
+  opacity: 0.9;
+  transition: 0.3s ease-in-out;
+}
+/* From Uiverse.io by Yaya12085 */
+.custum-file-upload {
+  height: 50px;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  cursor: pointer;
+  border: 2px dashed #cacaca;
+  background-color: rgba(255, 255, 255, 1);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
 }
 
-.pose-data {
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    background-color: #fff; /* White background for each pose data */
+.custum-file-upload .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.image-container {
-    text-align: center;
+.custum-file-upload .icon svg {
+  height: 40px;
+  fill: rgba(75, 85, 99, 1);
 }
 
-.image-container img {
-    max-width: 100%; /* Make images responsive */
-    height: auto;
-    margin-bottom: 10px;
+.custum-file-upload .text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-table {
-    width: 100%;
-    margin-top: 10px;
-    border-collapse: collapse;
+.custum-file-upload .text span {
+  font-weight: 400;
+  color: rgba(75, 85, 99, 1);
 }
 
-table, th, td {
-    border: 1px solid #ddd;
+.custum-file-upload input {
+  display: none;
 }
 
-th, td {
-    padding: 8px;
-    text-align: left;
+.image-preview {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+.text {
+  font-size: 10px;
+  text-align: center;
+  text-transform: capitalize;
+  margin: 12px 0;
+}
+.upload-section {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+.upload-img {
+  width: 200px;
+  height: 100px;
+  border: 2px dashed #cacaca;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 10px;
+  padding: 0.1rem;
+  box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
 }
 
-#total-weight {
-    margin-top: 20px;
+.custum-file-upload.disabled label {
+  pointer-events: none;
+  opacity: 0.5;
+  background-color: #d99a9a;
 }
 
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    display: block;
-    margin: 20px auto;
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  background-color: #d99a9a;
 }
-
-button:hover {
-    background-color: #45a049;
-}
-
-/* Media queries for responsiveness */
-@media screen and (max-width: 768px) {
-    .image-container img {
-        max-width: 100%;
-        height: auto;
-    }
-}
-
-@media screen and (max-width: 600px) {
-    h1 {
-        font-size: 24px; /* Adjust heading size for smaller screens */
-        text-align: center;
-    }
-    .pose-data {
-        padding: 8px;
-    }
-    table, th, td {
-        padding: 6px;
-        font-size: 14px; /* Adjust table font size */
-    }
-    button {
-        padding: 8px 12px;
-        font-size: 14px; /* Adjust button font size */
-    }
+@media screen and (max-width: 1024px) {
+  body {
+    background-color: lightgreen;
+  }
+  .first-sub-sec img {
+    width: 350px;
+  }
+  .flex {
+    justify-content: center;
+  }
+  .first-sec-section{
+    margin: 0 6px;
+    width: auto;
+  }
+  .custum-file-upload{
+    height: 50px;
+    width: 70px;
+  }
+  .upload-img{
+    width: 140px;
+    height: 95px;
+  }
+  .first-sec-section h3 {
+    font-size: 10px;
+  }
+  .first-sec-section h2{
+    font-size: 14px;
+  }
+  nav{
+    padding: 0;
+  }
+  nav h1{
+    font-size: 12px;
+    margin: 0 10px;
+  }
 }

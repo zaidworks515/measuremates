@@ -14,6 +14,7 @@ import joblib
 from weight_price import price_calculation
 from pose_seg import model_implementation
 
+
 class Singleton:
     _instances = {}
 
@@ -89,9 +90,6 @@ def preprocess_image(image, target_size=(640, 640)):
 
 
 
-
-
-
 @app.before_request
 def load_models():
     g.model_loader = ModelLoader()
@@ -163,9 +161,9 @@ def prediction_web():
                 
                 
                 
-                # cv2.imwrite('FRONT_POSE.jpg',images['front_pose'])
-                # cv2.imwrite('SIDE_POSE.jpg',images['side_pose'])
-                # cv2.imwrite('BACK_POSE.jpg',images['back_pose'])
+                cv2.imwrite('FRONT_POSE.jpg',images['front_pose'])
+                cv2.imwrite('SIDE_POSE.jpg',images['side_pose'])
+                cv2.imwrite('BACK_POSE.jpg',images['back_pose'])
                 
 
                 results = {}
@@ -376,7 +374,7 @@ def show_last_result():
     if last_result:
         return render_template('result.html', **last_result)
     else:
-        return "No result available."    
+        return "System is unable to detetect any cow in the given images."    
     
 
 

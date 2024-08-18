@@ -1,0 +1,119 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #A47945; /* Light brown background */
+    position: relative;
+    padding-top: 150px; /* Adjust padding to prevent overlap with logo */
+}
+
+.watermark-container {
+    position: relative;
+    overflow: hidden; 
+}
+
+.watermark {
+    position: fixed; /* Use fixed positioning to keep the watermark on top */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-40deg);
+    font-size: 120px; /* Adjust the size as needed */
+    color: rgba(200, 200, 200, 0.671); /* Light grey with transparency */
+    font-weight: bold;
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1000; /* Ensure watermark is on top of everything else */
+    width: 100%;
+    text-align: center;
+}
+
+h1, h2 {
+    color: black; /* Dark text color */
+}
+
+.logo {
+    position:absolute; /* Use fixed positioning to keep the logo in place */
+    top: 5px;
+    left: 10px;
+    width: 100px;
+    margin-bottom: 20px;
+    z-index: 1001; /* Ensure the logo stays on top of other elements */
+}
+
+.pose-data {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff; /* White background for each pose data */
+}
+
+.image-container {
+    text-align: center;
+}
+
+.image-container img {
+    max-width: 100%; /* Make images responsive */
+    height: auto;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+#total-weight {
+    margin-top: 20px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 768px) {
+    .image-container img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    h1 {
+        font-size: 24px; /* Adjust heading size for smaller screens */
+        text-align: center;
+    }
+    .pose-data {
+        padding: 8px;
+    }
+    table, th, td {
+        padding: 6px;
+        font-size: 14px; /* Adjust table font size */
+    }
+    button {
+        padding: 8px 12px;
+        font-size: 14px; /* Adjust button font size */
+    }
+}
