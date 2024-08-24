@@ -1,219 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEASUREMATES</title>
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <link rel="icon" href="{{ url_for('static', filename='image/favicon.ico') }}" type="image/x-icon">
-  </head>
-  <body>
-    <nav>
-      <img src="../static/image/img1.png" alt="img1" />
-      <h1>Welcome To Measuremates</h1>
-    </nav>
-    <div class="flex">
-      <div class="first-sec-section">
-        <div>
-          <h2>Please upload images of cow in all three poses</h2>
-          <form
-            action="/evaluate_web"
-            method="post"
-            enctype="multipart/form-data"
-            id="uploadForm"
-          >
-            <!-- Front Pose Start -->
-            <h3>Front Pose</h3>
-            <div class="upload-section">
-              <div id="frontImagePreviewContainer" class="upload-img"></div>
-              <div class="custum-file-upload" id="frontImagePreviewContainer">
-                <label for="frontImageInput">
-                  <div class="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill=""
-                      viewBox="0 0 24 24"
-                    >
-                      <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
-                      <g
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        id="SVGRepo_tracerCarrier"
-                      ></g>
-                      <g id="SVGRepo_iconCarrier">
-                        <path
-                          fill=""
-                          d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
-                          clip-rule="evenodd"
-                          fill-rule="evenodd"
-                        ></path>
-                      </g>
-                    </svg>
-                  </div>
-                  <div class="text">
-                    <span>Click to upload Side Pose</span>
-                  </div>
-                  <input
-                    type="file"
-                    name="front_pose"
-                    accept="image/*"
-                    required
-                    id="frontImageInput"
-                    onchange="previewImage(event, 'frontImagePreviewContainer'); enableNextInput('sideImageInput');"
-                  />
-                </label>
-              </div>
-            </div>
-            <!-- Front Pose end -->
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #A47945; /* Light brown background */
+            position: relative;
+            padding-top: 150px; /* Adjust padding to prevent overlap with logo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            text-align: center;
+        }
 
-            <!-- Side Pose Start -->
-            <h3>Side Pose</h3>
-            <div class="upload-section">
-              <div id="sideImagePreviewContainer" class="upload-img"></div>
-              <div class="custum-file-upload" id="sideImagePreviewContainer">
-                <label for="sideImageInput">
-                  <div class="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill=""
-                      viewBox="0 0 24 24"
-                    >
-                      <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
-                      <g
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        id="SVGRepo_tracerCarrier"
-                      ></g>
-                      <g id="SVGRepo_iconCarrier">
-                        <path
-                          fill=""
-                          d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
-                          clip-rule="evenodd"
-                          fill-rule="evenodd"
-                        ></path>
-                      </g>
-                    </svg>
-                  </div>
-                  <div class="text">
-                    <span>Click to upload Side Pose</span>
-                  </div>
-                  <input
-                    type="file"
-                    name="side_pose"
-                    accept="image/*"
-                    required
-                    id="sideImageInput"
-                    disabled
-                    onchange="previewImage(event, 'sideImagePreviewContainer'); enableNextInput('backImageInput');"
-                  />
-                </label>
-              </div>
-            </div>
-            <!-- Side Pose end -->
+        .container {
+            max-width: 800px; /* Maximum width of the content */
+            width: 100%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-            <!-- Back Pose Start -->
-            <h3>Back Pose</h3>
-            <div class="upload-section">
-              <div id="backImagePreviewContainer" class="upload-img"></div>
-              <div class="custum-file-upload" id="backImagePreviewContainer">
-                <label for="backImageInput">
-                  <div class="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill=""
-                      viewBox="0 0 24 24"
-                    >
-                      <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
-                      <g
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        id="SVGRepo_tracerCarrier"
-                      ></g>
-                      <g id="SVGRepo_iconCarrier">
-                        <path
-                          fill=""
-                          d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
-                          clip-rule="evenodd"
-                          fill-rule="evenodd"
-                        ></path>
-                      </g>
-                    </svg>
-                  </div>
-                  <div class="text">
-                    <span>Click to upload Back Pose</span>
-                  </div>
-                  <input
-                    type="file"
-                    name="back_pose"
-                    accept="image/*"
-                    required
-                    id="backImageInput"
-                    disabled
-                    onchange="previewImage(event, 'backImagePreviewContainer'); checkAllInputsFilled();"
-                  />
-                </label>
-              </div>
-            </div>
-            <!-- Back Pose end -->
+        .watermark-container {
+            position: relative;
+            overflow: hidden;
+        }
 
-            <p id="errorMessage"></p>
-            <button type="submit" id="evaluateButton" disabled>
-              Evaluate
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+        .watermark {
+            position: fixed; /* Use fixed positioning to keep the watermark on top */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-40deg);
+            font-size: 120px; /* Adjust the size as needed */
+            color: rgba(200, 200, 200, 0.671); /* Light grey with transparency */
+            font-weight: bold;
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1000; /* Ensure watermark is on top of everything else */
+            width: 100%;
+            text-align: center;
+        }
 
+        h1, h2 {
+            color: black; /* Dark text color */
+        }
+
+        .logo {
+            position: absolute; /* Use absolute positioning to keep the logo in place */
+            top: 5px;
+            left: 10px;
+            width: 100px;
+            margin-bottom: 20px;
+            z-index: 1001; /* Ensure the logo stays on top of other elements */
+        }
+
+        .pose-data {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff; /* White background for each pose data */
+        }
+
+        .image-container {
+            text-align: center;
+        }
+
+        .image-preview {
+            width: 500px;
+            height: 500px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+        }
+
+        .upload-section input[type="file"] {
+            display: block;
+            margin: 0 auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+        }
+
+        .upload-section input[type="file"]:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        #total-weight {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Media queries for responsiveness */
+        @media screen and (max-width: 768px) {
+            .image-preview {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            h1 {
+                font-size: 24px; /* Adjust heading size for smaller screens */
+                text-align: center;
+            }
+            .pose-data {
+                padding: 8px;
+            }
+            table, th, td {
+                padding: 6px;
+                font-size: 14px; /* Adjust table font size */
+            }
+            button {
+                padding: 8px 12px;
+                font-size: 14px; /* Adjust button font size */
+            }
+        }
+    </style>
     <script>
-      function enableNextInput(nextInputId) {
-        const nextInput = document.getElementById(nextInputId);
-        nextInput.disabled = false;
-        nextInput.parentElement.classList.remove("disabled"); // Remove disabled styling
-      } 
-    
-      function previewImage(event, previewContainerId) {
-        const previewContainer = document.getElementById(previewContainerId);
-        previewContainer.innerHTML = ""; // Clear previous image
-    
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const img = document.createElement("img");
-            img.src = e.target.result;
-            img.classList.add("image-preview");
-            img.style.width = "100%"; // Adjust as needed
-            img.style.height = "100%";
-            img.style.objectFit = "fill"; // Adjust as needed
-            previewContainer.appendChild(img);
-          };
-          reader.readAsDataURL(file);
+        function previewImage(event, previewContainerId) {
+            const previewContainer = document.getElementById(previewContainerId);
+            previewContainer.innerHTML = ''; // Clear previous previews
+            const files = event.target.files;
+            for (const file of files) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('image-preview');
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
         }
-      }
-    
-      function checkAllInputsFilled() {
-        const frontInput = document.getElementById("frontImageInput");
-        const sideInput = document.getElementById("sideImageInput");
-        const backInput = document.getElementById("backImageInput");
-        const evaluateButton = document.getElementById("evaluateButton");
-    
-        if (frontInput.files.length > 0 && sideInput.files.length > 0 && backInput.files.length > 0) {
-          evaluateButton.disabled = false;
-          evaluateButton.classList.remove("disabled"); // Remove disabled styling
-        }
-      }
-    
-      // Prevent clicks on disabled inputs and buttons
-      document.querySelectorAll('input[disabled], button[disabled]').forEach(element => {
-        element.addEventListener('click', (e) => {
-          e.preventDefault();
-          alert('This action is currently disabled. Please complete the previous steps to enable it.');
-        });
-      });
     </script>
-    
- 
-    
-  </body>
+</head>
+<body>
+    <div class="container">
+        <img src="../static/image/logo.jpg" alt="Logo" class="logo"> <!-- Add your logo here -->
+        <!-- <div class="watermark">MeasureMates</div> -->
+        <h1>WELCOME TO MEASUREMATES</h1>
+        <h2>"A PROJECT OF SSUET STUDENTS"</h2>
+        <br>
+        <h4>Please upload images of cow in all three poses</h4>
+        
+        <form action="/evaluate_web" method="post" enctype="multipart/form-data" id="uploadForm">
+            <div class="upload-section">
+                <h3>Front Pose</h3>
+                <input type="file" name="front_pose" accept="image/*" required id="frontImageInput" onchange="previewImage(event, 'frontImagePreviewContainer')">
+                <div id="frontImagePreviewContainer"></div>
+            </div>
+        
+            <div class="upload-section">
+                <h3>Side Pose</h3>
+                <input type="file" name="side_pose" accept="image/*" required id="sideImageInput" onchange="previewImage(event, 'sideImagePreviewContainer')">
+                <div id="sideImagePreviewContainer"></div>
+            </div>
+        
+            <div class="upload-section">
+                <h3>Back Pose</h3>
+                <input type="file" name="back_pose" accept="image/*" required id="backImageInput" onchange="previewImage(event, 'backImagePreviewContainer')">
+                <div id="backImagePreviewContainer"></div>
+            </div>
+        
+            <p id="errorMessage"></p>
+            <button type="submit" id="evaluateButton">Evaluate</button>
+        </form>
+        
+    </div>
+</body>
 </html>

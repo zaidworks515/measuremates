@@ -29,11 +29,7 @@ def model_implementation(image, filename, hw):
                 
             pose_predicted_image = pose_results[0].plot() # plotted image pose
             
-            pose_path = f'static/predicted_output/pose_{filename}'
-            
-            cv2.imwrite(f'static/predicted_output/pose_{filename}', pose_predicted_image)
-            
-            return pose_path
+            return pose_predicted_image
             
                     
         def seg_image_output(pose):
@@ -44,11 +40,7 @@ def model_implementation(image, filename, hw):
                 
             seg_predicted_image = seg_results[0].plot() # plotted image seg
             
-            seg_path = f'static/predicted_output/pose_{filename}'
-            
-            cv2.imwrite(f'static/predicted_output/seg_{filename}', seg_predicted_image)
-            
-            return seg_path
+            return seg_predicted_image
             
             
         
@@ -157,7 +149,7 @@ def model_implementation(image, filename, hw):
                     second_foot = predicted_keypoints[6] # left back foot
                                         
                     for h in [first_foot, second_foot]:
-                        if h.get('y') > 355:  # isko change krna hai height waali condition set krne k liye
+                        if h.get('y') > 380:  # isko change krna hai height waali condition set krne k liye
                             height='normal'
                             
                         elif (h.get('x') or h.get('y')) == 0:
@@ -178,7 +170,7 @@ def model_implementation(image, filename, hw):
                     second_foot = predicted_keypoints[7]  # right back foot
 
                     for h in [first_foot, second_foot]:
-                        if h.get('y') > 355:   # isko change krna hai height waali condition set krne k liye
+                        if h.get('y') > 380:   # isko change krna hai height waali condition set krne k liye
                             height='normal'
                             
                         elif (h.get('x') or h.get('y')) == 0:
@@ -220,7 +212,7 @@ def model_implementation(image, filename, hw):
                     second_foot = predicted_keypoints[5]  # right front hoof
 
                     for h in [first_foot, second_foot]:
-                        if h.get('y') > 355:   # isko change krna hai height waali condition set krne k liye
+                        if h.get('y') > 380:   # isko change krna hai height waali condition set krne k liye
                             height='normal'
                             
                         elif (h.get('x') or h.get('y')) == 0:
@@ -246,7 +238,7 @@ def model_implementation(image, filename, hw):
                     second_foot = predicted_keypoints[7]  # right back hoof
 
                     for h in [first_foot, second_foot]:
-                        if h.get('y') > 355:   # isko change krna hai height waali condition set krne k liye
+                        if h.get('y') > 380:   # isko change krna hai height waali condition set krne k liye
                             height='normal'
                             
                         elif (h.get('x') or h.get('y')) == 0:
